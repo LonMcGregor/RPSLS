@@ -1,3 +1,5 @@
+package rockPaperScissorsLizardSpock;
+
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,9 +10,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
-/*
- * r/DailyProgrammer 04/21/2014
+/* r/DailyProgrammer 04/21/2014
  * Rock Paper Scissors Lizard Spock - EASY
  * http://www.reddit.com/r/dailyprogrammer/comments/23lfrf/4212014_challenge_159_easy_rock_paper_scissors/
  * u/LonMcGregor
@@ -21,7 +23,8 @@ public class GameUI extends JFrame implements ActionListener{
 	private static GameLogic game;
 	//Game UI Fields
 	private JPanel user, top, computer, stats, bottom;
-	private JLabel cpuIndicate, cpuChoice, statsTitle, statsText, userChoice, gameOutcome;
+	private JLabel cpuIndicate, cpuChoice, statsTitle, userChoice, gameOutcome;
+	private JTextArea statsText;
 	private JButton [] choices;
 	private JButton newGame, clearStats;
 	private static final String [] choiceStrings= {"Rock", "Paper", "Scissors", "Lizard", "Spock"};
@@ -51,7 +54,7 @@ public class GameUI extends JFrame implements ActionListener{
 		computer = new JPanel(new GridLayout(3,1));
 		cpuIndicate = new JLabel("Computer Choice:");
 		cpuChoice = new JLabel("RPSLS");
-		newGame = new JButton("New Turn");
+		newGame = new JButton("New Game");
 		newGame.addActionListener(this);
 		computer.add(cpuIndicate);
 		computer.add(cpuChoice);
@@ -60,8 +63,10 @@ public class GameUI extends JFrame implements ActionListener{
 	private void makeStats() {
 		stats = new JPanel(new GridLayout(3,1));
 		statsTitle = new JLabel("Statistics:");
-		statsText = new JLabel("No Stored Data");
-		clearStats = new JButton("Clear Stats");
+		statsText = new JTextArea("No Stored Data");
+		statsText.setEditable(false);
+		clearStats = new JButton("Quit Game");
+		clearStats.setEnabled(false);
 		clearStats.addActionListener(this);
 		stats.add(statsTitle);
 		stats.add(statsText);
@@ -96,7 +101,6 @@ public class GameUI extends JFrame implements ActionListener{
 		}
 		if (src==clearStats){
 			game.clearStats();
-			statsText.setText("No Stored Data");
 		}
 		if (src==choices[0]||src==choices[1]||src==choices[2]||src==choices[3]||src==choices[4]){
 			chooseCard(src);
@@ -124,7 +128,10 @@ public class GameUI extends JFrame implements ActionListener{
 		game.newComputerCard();
 		cpuIndicate.setText("Computer is waiting...");
 		userChoice.setText("Make your choice...");
+		newGame.setText("Next Turn");
+		newGame.setEnabled(false);
 		SwitchUserChoice(true);
+		clearStats.setEnabled(true);
 	}
 	public void finishTurn(){
 		cpuIndicate.setText("Computer Chose: ");
@@ -133,12 +140,13 @@ public class GameUI extends JFrame implements ActionListener{
 		int win = game.checkWin();
 		if (win==0){
 			gameOutcome.setText("You Lose!");
-		} if (win==1){
+		} else if (win==1){
 			gameOutcome.setText("You Win!");
 		} else {
 			gameOutcome.setText("It's a Tie!");
 		}
 		updateStats();
+		newGame.setEnabled(true);
 	}
 	
 	private void updateStats(){

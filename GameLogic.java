@@ -1,28 +1,10 @@
-import java.util.Random;
+package rockPaperScissorsLizardSpock;
 
 public class GameLogic {
 	private static GameStats stats;
 	private Card currentCPU;
 	private Card currentPLY;
-	//types of choice
-	enum Card{
-		ROCK, PAPER, SCISSORS, LIZARD, SPOCK;
-		
-		public String toString(){
-			if (this==ROCK)
-				return "Rock";
-			else if (this==PAPER)
-				return "Paper";
-			else if (this==SCISSORS)
-				return "Scissors";
-			else if (this==LIZARD)
-				return "Lizard";
-			else if (this==SPOCK)
-				return "Spock";
-			else return null;
-		}
-		
-	}
+	private GameAgent CPU;
 
 	//start game
 	public GameLogic(){
@@ -30,6 +12,7 @@ public class GameLogic {
 	}
 	public void init(){
 		clearStats();
+		CPU = new GameAgent();
 	}
 	
 	//get new cpu card
@@ -39,7 +22,7 @@ public class GameLogic {
 		return x;
 	}
 	private Card computerCard(){
-		int choice = new Random().nextInt(4);
+		/*int choice = new Random().nextInt(4);
 		if (choice == 0)
 			return Card.ROCK;
 		if (choice == 1)
@@ -51,7 +34,10 @@ public class GameLogic {
 		if (choice == 4)
 			return Card.SPOCK;
 		else
-			return null;
+			return null;*/
+		System.out.println();
+		System.out.println("+-------------+");
+		return CPU.chooseCard();
 	}
 	
 	//stat control and return
@@ -78,6 +64,7 @@ public class GameLogic {
 		x = x + "\n" + "Ties: " + getTies();
 		return x;
 	}
+	
 	//gets cards
 	public String getCardString(boolean x){
 		if(x)
@@ -101,6 +88,7 @@ public class GameLogic {
 	}
 	public void setPlayerCard(Card c){
 		currentPLY = c;
+		System.out.println("User chose: "+c.toString());
 	}
 	
 	public int checkWin(){
@@ -109,14 +97,19 @@ public class GameLogic {
 	
 	public int checkWin(Card cpu, Card ply){
 		int win = checkCard(cpu,ply);
+		CPU.incCard(true, cpu.toInt());
+		CPU.incCard(false, ply.toInt());
 		if(win==-1){
 			throw new Error("Could not assertain win state.");
 		}
 		if (win==0){
+			System.out.println("Computer Wins "+win+" :"+cpu.toString()+" beats "+ply.toString());
 			stats.incWins(0);
-		} if (win==1){
+		} else if (win==1){
+			System.out.println("Player Wins "+win+" :"+ply.toString()+" beats "+cpu.toString());
 			stats.incWins(1);
-		} else {
+		} else {			
+			System.out.println("Both tie "+win+" :"+cpu.toString()+" ties with "+ply.toString());
 			stats.incTies();
 		}
 		return win;

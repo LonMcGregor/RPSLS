@@ -1,3 +1,5 @@
+package rockPaperScissorsLizardSpock;
+
 public class GameStats {
 	private int totalGames;
 	private int [] wins; //0=cpu //1=1up
